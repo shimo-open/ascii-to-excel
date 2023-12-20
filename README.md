@@ -39,6 +39,22 @@
     - 通过命令行输入参数，运行程序，处理输入文件夹中的所有图像文件，生成对应的 ASCII 艺术风格的 Excel 文件。
 
 注意：由于上传的图片像素太大可能导致运行速度较慢，像素宽大小应不超过 26*26=676，以防止 Excel 列数过多。
+## 各个函数功能
+| 函数名 | 参数 | 返回值 | 功能 |
+| --- | --- | --- | --- |
+| hasImageExtension | filename string | bool | 判断文件扩展名是否为图片格式。 |
+| columnIndexToExcelName | index int | string | 将整数列索引转换为 Excel 列名。 |
+| weightPixel | pixels float64 | float64 | 将像素值转换为磅值。 |
+| pixelsToPoints | pixels float64 | float64 | 将像素值转换为磅值。 |
+| openAndResizeImage | imagePath string, scaleFactor float64 | *gg.Context, error | 打开并缩放图片，返回绘图上下文。 |
+| createExcelFile | None | *excelize.File, int, error | 创建 Excel 文件。 |
+| setColumnWidths | file *excelize.File, imgWidth int | None | 设置 Excel 文件中各列的宽度。 |
+| setRowHeights | file *excelize.File, imgHeight int | None | 设置 Excel 文件中各行的高度。 |
+| processPixel | context _gg.Context, file _excelize.File, h, w int | None | 处理像素，根据像素值设置 Excel 单元格的值和样式。 |
+| imageToASCII | imagePath, outputExcel string | None | 将图片转换为 ASCII 艺术，并保存到 Excel 文件中。 |
+| parseWeights | weightsStr string | []float64 | 解析 ASCII 字符权重字符串为 float64 数组。 |
+| init | None | None | 初始化命令行参数，通过 flag 包定义并解析各种命令行参数。
+
 ## 运行步骤
 1. 直接以默认参数运行（需要修改文件夹地址为自己的）
 2. 命令行参数运行\

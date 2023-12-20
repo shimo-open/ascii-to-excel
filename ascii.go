@@ -50,13 +50,13 @@ func weightPixel(pixels float64) float64 {
 // 像素转磅
 func pixelsToPoints(pixels float64) float64 {
 	pointsPerInch := 72.0
-	inchesPerPoint := 1 / 96.0 //不同显示有差异
+	inchesPerPoint := 1 / 96.0
 	return pixels * inchesPerPoint * pointsPerInch
 }
 
 // 打开并调整图片大小
 func openAndResizeImage(imagePath string, scaleFactor float64) (*gg.Context, error) {
-	// 打开图片并转换为灰度模式
+	// 打开图片
 	img, err := gg.LoadImage(imagePath)
 	if err != nil {
 		return nil, fmt.Errorf("error loading image: %v", err)
@@ -98,19 +98,17 @@ func setRowHeights(file *excelize.File, imgHeight int) {
 }
 
 func processPixel(context *gg.Context, file *excelize.File, h, w int) {
+	//获取像素点颜色
 	pixelColor := context.Image().At(w, h)
 	r, g, b, _ := pixelColor.RGBA()
-	//获取亮度值
+	//获取像素点亮度值
 	pixelValue, _, _ := color.RGBToYCbCr(uint8(r/256), uint8(g/256), uint8(b/256))
 	asciiIndex := int((float64(pixelValue) / 255) * float64(len(asciiChars)-1))
 	asciiChar := string(asciiChars[asciiIndex])
 	weight := asciiWeights[asciiIndex]
 	fontColor := fmt.Sprintf("%02X%02X%02X", int(r/256), int(g/256), int(b/256))
+	result := strings.Repeat(asciiChar, int(weight))
 	cell := fmt.Sprintf("%s%d", columnIndexToExcelName(w), h+1)
-	result := "."
-	if weight > 0 {
-		result = strings.Repeat(asciiChar, int(weight))
-	}
 	file.SetCellValue(sheetName, cell, result)
 	style, _ := file.NewStyle(&excelize.Style{
 		Font: &excelize.Font{
